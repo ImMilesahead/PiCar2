@@ -18,14 +18,14 @@ Won't run though. The way it is designed is for there to be a directory in /home
 
 ##### Setup instructions #####
 
-[code]
+```
 $ cd PiCar2
 $ mkdir Media
 $ mkdir Media/Music
 $ mkdir Media/Pictures
 $ mkdir Media/Videos
 $ mkdir Media/Playlists 
-[/code]
+```
 
 [code] Media/Music [/code] is where we'll dumb all of the songs. These will be sorted through and ategorized by mutagen based on metadata tags such as song name, song artist, and album
 
@@ -39,5 +39,7 @@ The only libraries that should need to be installed are mutagen and pygame.
 In the future I plan to add functionality that uses dlib face_recognition and pyobd2, but I'll include those here when the time comes.
 
 to run simply 
-[code] $ python Main.py [/code]
+```
+$ python Main.py 
+```
 assuming python is installed and you are in the PiCar directory
