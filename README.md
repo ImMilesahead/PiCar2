@@ -8,10 +8,10 @@ It also (should) have functionality to utilize a OBD2 sensor in modern vehicles.
 
 ##### Installation instructions #####
 
-[code]
+```
 $ cd
 $ git clone https://github.com/ImMilesAhead/PiCar2.git
-[/code]
+```
 
 Boom! Done! Installed!
 Won't run though. The way it is designed is for there to be a directory in /home/$USER/PiCar2/ called Media. In this folder there will need to be a couple subfolders being Music, Pictures, Videos, and Playlists. we'll create those now 
