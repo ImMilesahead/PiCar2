@@ -20,7 +20,7 @@ class MainDisplay:
         for b in self.buttonInfo:
             self.buttons.append(MainMenuItem(self.skrn, self, x*75, b[0], self.setActive, x-1))
             x += 1
-        self.translate((100, 0))
+        self.translate((240, 0))
 
         #self.buttons = [self.music, self.diag, self.maps, self.update, self.quit]
 
@@ -74,11 +74,15 @@ class MainDisplay:
             button.event(event)
 
     def setActive(self, button):
-        if button == 4:
-            pygame.quit()
-            sys.exit()
+        
         if button < len(self.buttons):
-            self.activeButton = button
+            if button == 4:
+                pygame.quit()
+                sys.exit()
+            elif button == 3:
+                self.update()
+            else:
+                self.activeButton = button
             pass
         else:
             # Should never happen
@@ -90,8 +94,14 @@ class MainDisplay:
         self.circleCenter = (self.circleCenter[0] + deltaPos[0], self.circleCenter[1] + deltaPos[1])
         for button in self.buttons:
             button.y += deltaPos[1]
+            button.points = button.getPoints()
     
     def distanceFrom(self, point):
         dx = self.circleCenter[0] - point[0]
         dy = self.circleCenter[1] - point[1]
         return sqrt(pow(dx, 2) + pow(dy, 2))
+    
+    def update(self):
+        self.buttons[3].text = 'Updating...'
+        call(['git', 'pull', 'origin', 'master'])
+        self.button[3].text = 'Up to date!'
