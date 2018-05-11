@@ -14,7 +14,7 @@ class MainDisplay:
         self.activeButton = None
         self.before = datetime.now()
 
-        mmbfile = open(os.getcwd() + '/MainMenuButtons.txt', 'r')
+        mmbfile = open(CWD + '/MainMenuButtons.txt', 'r')
         self.buttonInfo = [f.split(' ') for f in mmbfile.read().split('\n')]
         mmbfile.close()
         x = 1
@@ -47,8 +47,7 @@ class MainDisplay:
 
 
     def logic(self):
-        now = datetime.now
-        after = now()
+        after = datetime.now()
         deltaTime = after.second - self.before.second
         deltaTime *= 1000000
         deltaTime += after.microsecond - self.before.microsecond
@@ -73,8 +72,10 @@ class MainDisplay:
             self.update()
 
     def event(self, event):
-        if event == 'Swipe Right':
-            self.activeButton = None
+        if event == 'Swipe Right':        
+            mouse_pos = pygame.mouse.get_pos()
+            if mouse_pos[0] < 250:
+                self.activeButton = None
         for button in self.buttons:
             button.event(event)
 
@@ -87,6 +88,7 @@ class MainDisplay:
                 self.updateStatus()
             else:
                 self.activeButton = button
+                self.buttons[button].setActive()
             pass
         else:
             # Should never happen

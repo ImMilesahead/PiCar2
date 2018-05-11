@@ -25,8 +25,10 @@ pygame.mixer.init()
 # Windows is used to test and debug on my laptop for now, so we don't want it fullscreen
 #   Since that's apain in the ass to test on
 if system() == 'Windows':
+    CWD='C:\\Users\\Kuuhaku\\Desktop\\PiCar2'
     skrn = pygame.display.set_mode((800, 480))
 else:
+    CWD='/home/pi/PiCar2'
     skrn = pygame.display.set_mode((800, 480), pygame.FULLSCREEN)
 
 SWIPE_TIME = 2
