@@ -13,6 +13,7 @@ class MainDisplay:
         self.buttons = []
         self.activeButton = None
         self.before = datetime.now()
+        self.lastEvent = datetime.now()
 
         mmbfile = open(CWD + '/MainMenuButtons.txt', 'r')
         self.buttonInfo = [f.split(' ') for f in mmbfile.read().split('\n')]
@@ -59,7 +60,7 @@ class MainDisplay:
             self.targetPos = (self.initPos[0] - 435, self.initPos[1])
         off = self.distanceFrom(self.targetPos)
 
-        eif off > 0:
+        if off > 0:
             deltaPos = (self.targetPos[0] - self.circleCenter[0], self.targetPos[1] - self.circleCenter[1])
             deltaPos = (deltaPos[0] * deltaTime*10, deltaPos[1]*deltaTime*10)
             self.translate(deltaPos)
@@ -68,8 +69,13 @@ class MainDisplay:
         if self.updating:
             self.updating = False
             self.update()
+        n = after - self.lastEvent
+        if n.total_seconds() > 15 and not self.activeButton == None:
+            self.buttons[self.activeButton].notActive()
+            self.activeButton = None
 
     def event(self, event):
+        self.lastEvent = datetime.now()
         if event == 'Swipe Right':        
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] < 250:

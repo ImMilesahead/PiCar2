@@ -77,9 +77,12 @@ class MainMenuItem:
                         self.callback(self.args)
         if event == 'Swipe Right':
             if mouse_pos[0] < 250:
-                self.isActive = False
-                self.targetL = self.initL
-                self.targetTextOffset = 0
+                self.notActive()
+        
+    def notActive(self):
+        self.isActive = False
+        self.targetL = self.initL
+        self.targetTextOffset = 0
 
     def setActive(self):
         self.isActive = True
