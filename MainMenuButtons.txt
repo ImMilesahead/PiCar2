@@ -1,0 +1,5 @@
+Music
+Diagnostics
+Maps
+Update
+Quit
