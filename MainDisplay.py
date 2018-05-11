@@ -107,7 +107,7 @@ class MainDisplay:
     
     def updateStatus(self):
         self.updating = True
-        self.buttons[3].text = 'Updating... Test'
+        self.buttons[3].text = 'Updating...'
         
     def update(self):
         now = datetime.now()
