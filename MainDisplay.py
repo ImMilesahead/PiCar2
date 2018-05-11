@@ -76,6 +76,7 @@ class MainDisplay:
 
     def event(self, event):
         self.lastEvent = datetime.now()
+        print(event)
         if event == 'Swipe Right':        
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] < 250:
