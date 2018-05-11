@@ -59,9 +59,7 @@ class MainDisplay:
             self.targetPos = (self.initPos[0] - 435, self.initPos[1])
         off = self.distanceFrom(self.targetPos)
 
-        if off < 15 and off > 0:
-            self.circleCenter = self.targetPos
-        elif off > 0:
+        eif off > 0:
             deltaPos = (self.targetPos[0] - self.circleCenter[0], self.targetPos[1] - self.circleCenter[1])
             deltaPos = (deltaPos[0] * deltaTime*10, deltaPos[1]*deltaTime*10)
             self.translate(deltaPos)
