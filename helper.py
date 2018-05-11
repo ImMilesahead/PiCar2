@@ -22,6 +22,7 @@ def text(skrn, text, pos=(0, 0), size=60, color=(255, 200, 100)):
 
 pygame.init()
 pygame.mixer.init()
+pygame.mouse.set_visible(False)
 # Windows is used to test and debug on my laptop for now, so we don't want it fullscreen
 #   Since that's apain in the ass to test on
 if system() == 'Windows':
