@@ -1,5 +1,6 @@
 from helper import *
 from MainMenuItem import *
+from subprocess import call
 
 class MainDisplay:
     def __init__(self, skrn):
@@ -17,6 +18,7 @@ class MainDisplay:
         self.buttonInfo = [f.split(' ') for f in mmbfile.read().split('\n')]
         mmbfile.close()
         x = 1
+        self.updating = False
         for b in self.buttonInfo:
             self.buttons.append(MainMenuItem(self.skrn, self, x*75, b[0], self.setActive, x-1))
             x += 1
@@ -66,6 +68,9 @@ class MainDisplay:
             self.translate(deltaPos)
         for button in self.buttons:
             button.logic()
+        if self.updating:
+            self.updating = False
+            self.update()
 
     def event(self, event):
         if event == 'Swipe Right':
@@ -74,13 +79,12 @@ class MainDisplay:
             button.event(event)
 
     def setActive(self, button):
-        
         if button < len(self.buttons):
             if button == 4:
                 pygame.quit()
                 sys.exit()
             elif button == 3:
-                self.update()
+                self.updateStatus()
             else:
                 self.activeButton = button
             pass
@@ -101,7 +105,13 @@ class MainDisplay:
         dy = self.circleCenter[1] - point[1]
         return sqrt(pow(dx, 2) + pow(dy, 2))
     
-    def update(self):
+    def updateStatus(self):
+        self.updating = True
         self.buttons[3].text = 'Updating...'
+        
+    def update(self):
+        now = datetime.now()
+        while now.microsecond > 100000:
+            now = datetime.now()
         call(['git', 'pull', 'origin', 'master'])
-        self.button[3].text = 'Up to date!'
+        self.buttons[3].text = 'Up to date!'

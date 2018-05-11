@@ -8,8 +8,8 @@ def run():
     screenManager.addScreen(mainScreen)
 
     while True:
-        pygame.display.flip()
         screenManager.draw()
+        pygame.display.flip()
         screenManager.logic()
         for event in pygame.event.get():
             screenManager.event(event)
