@@ -14,10 +14,10 @@ class AlbumButton:
         pygame.draw.lines(self.skrn, Color.Text, True, self.points, 2)
         text(self.skrn, self.text.getText(), (self.points[0][0]+4, self.points[0][1]+2), size=20, color=Color.Text)
     def logic(self, deltaTime):
-        p1 = (self.initialPoints[0][0], self.initialPoints[0][1] + self.parent.yOffset.getValue())
-        p2 = (self.initialPoints[1][0], self.initialPoints[1][1] + self.parent.yOffset.getValue())
-        p3 = (self.initialPoints[2][0], self.initialPoints[2][1] + self.parent.yOffset.getValue())
-        p4 = (self.initialPoints[3][0], self.initialPoints[3][1] + self.parent.yOffset.getValue())
+        p1 = (self.initialPoints[0][0], self.initialPoints[0][1] + self.parent.yOffset.getValue() + self.parent.scrollOffset)
+        p2 = (self.initialPoints[1][0], self.initialPoints[1][1] + self.parent.yOffset.getValue() + self.parent.scrollOffset)
+        p3 = (self.initialPoints[2][0], self.initialPoints[2][1] + self.parent.yOffset.getValue() + self.parent.scrollOffset)
+        p4 = (self.initialPoints[3][0], self.initialPoints[3][1] + self.parent.yOffset.getValue() + self.parent.scrollOffset)
         self.points = (p1, p2, p3, p4)
         self.text.logic(deltaTime)
     def event(self, event):

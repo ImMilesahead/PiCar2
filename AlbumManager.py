@@ -1,5 +1,5 @@
 from Album import *
-
+from random import shuffle
 class AlbumManager:
     def __init__(self, songs):
         self.songs = songs
@@ -13,6 +13,7 @@ class AlbumManager:
             if not flag:
                 self.albums.append(Album(song.album))
                 self.albums[-1].addSong(song)
+        shuffle(self.albums[0].songs)
         for album in self.albums:
             print(album.name)
     def getAlbum(self, album):

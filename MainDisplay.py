@@ -44,6 +44,7 @@ class MainDisplay:
 
 
     def draw(self):
+
         if self.musicX.getValue() < 390:
             self.skrn.blit(self.musicImage, (self.musicX.getValue() + self.buttons[0].points[0][0]-50, 80))
         pygame.draw.rect(self.skrn, Color.Background, (self.musicX.getInitPos() + self.buttons[0].points[0][0]-50, 80, 120, 40), 0)
@@ -51,7 +52,8 @@ class MainDisplay:
         # We wanna draw the buttons first so that we can hide them behind the display
         for button in self.buttons:
             button.draw()
-        
+        self.musicScreen.draw()
+
         #Draw oval thing
         pygame.draw.circle(self.skrn, Color.Primary, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius, 3)
         pygame.draw.circle(self.skrn, Color.Background, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius-1)
@@ -62,7 +64,6 @@ class MainDisplay:
         p3 = (800, 25)
         points = (p1, p2, p3)
 
-        self.musicScreen.draw()
         
         pygame.draw.lines(self.skrn, Color.Primary, False, points, 1)
         text(self.skrn, "S - Interface Mk 2", (600, 0), size=24, color=Color.Text)

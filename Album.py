@@ -24,3 +24,8 @@ class Album:
         return self.getCurrentSong()
     def getAlbumName(self):
         return self.name
+    def getLength(self):
+        length = 0
+        for song in self.songs:
+            length += song.length
+        return float(length)/60
