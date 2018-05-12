@@ -79,8 +79,7 @@ class MainDisplay:
         if self.showVolumeControl:
             pygame.draw.rect(self.skrn, Color.Primary, (700, 30, 100, 450), 2)
             pygame.draw.rect(self.skrn, Color.Primary, (702, 480-(450*self.volume), 96, 450*self.volume))
-        pygame.draw.circle(self.skrn, Color.Primary, (int(self.buttons[0].f(25+430*self.mediaPlayer.getPercent())), int(25+430*self.mediaPlayer.getPercent())), 3)
-        
+        pygame.draw.circle(self.skrn, Color.Primary, (int(self.buttons[0].f(25+430*self.mediaPlayer.getPercent())), int(25+430*self.mediaPlayer.getPercent())), 3)   
     def logic(self, deltaTime):
         # Update Time to Display
         now = datetime.now()
@@ -117,7 +116,11 @@ class MainDisplay:
         if mouse_pos[0] > 700 and mouse_pos[1] > 25 and self.showVolumeControl:
             self.volume = float(480 - mouse_pos[1])/455
             pygame.mixer.music.set_volume(self.volume)
-        
+        if mouse_pos[0] < 600 and mouse_pos[0] > 200 and self.activeButton == None:
+            if event == 'Swipe Left':
+                self.mediaPlayer.nextSong()
+            elif event == 'Swipe Right':
+                self.mediaPlayer.prevSong()
         if event == 'Swipe Left' and mouse_pos[0] > 600:
             self.showVolumeControl = True
             print('Volume showing')
