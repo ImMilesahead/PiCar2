@@ -1,13 +1,17 @@
 from helper import *
 from SmartValue import *
 class MainMenuItem:
-    def __init__(self, skrn, mainDisplay, y=0, text='None', callback=None, args=None):
+    def __init__(self, skrn, mainDisplay, y=0, text='None', callback=None, args=None, srcallback=None, srargs=None, slcallback=None, slargs=None):
         self.skrn = skrn
         self.mainDisplay = mainDisplay
         self.text = text
         self.y = y
         self.callback = callback
         self.args = args
+        self.srcallback = srcallback
+        self.srargs = srargs
+        self.slcallback = slcallback
+        self.slargs = slargs
 
         self.dy = 50
         self.dx = 50
@@ -26,6 +30,7 @@ class MainMenuItem:
 
     def draw(self):
         if self.y < 480 and self.y > -50:
+            pygame.draw.rect(self.skrn, Color.Background, (self.points[0][0], self.points[0][1], self.points[2][0]-self.points[0][0], self.points[2][1] - self.points[0][1]), 0)
             pygame.draw.lines(self.skrn, Color.Primary, False, self.points, 1)
             text_pos = (self.points[3][0]+5+self.text_offset.getValue(), self.points[0][1])
             if self.y > 240:
@@ -50,15 +55,26 @@ class MainMenuItem:
     def event(self, event):
         self.points = self.getPoints()
         mouse_pos = pygame.mouse.get_pos()
-        if event == 'Tap':
-            if mouse_pos[0] >= self.points[0][0] and mouse_pos[0] <= self.points[2][0] and mouse_pos[1] >= self.points[0][1] and mouse_pos[1] <= self.points[2][1]:
+        if mouse_pos[0] >= self.points[0][0] and mouse_pos[0] <= self.points[2][0] and mouse_pos[1] >= self.points[0][1] and mouse_pos[1] <= self.points[2][1]:
+            if event == 'Tap':
                 if self.args == None:
                     if not self.callback == None:
                         self.callback()
                 else:
                     if not self.callback == None:
                         self.callback(self.args)
-        
+            elif event == 'Swipe Right':
+                if not self.srcallback == None:
+                    if not self.srargs == None:
+                        self.srcallback(self.srargs)
+                    else:
+                        self.srcallback()
+            elif event == 'Swipe Left':
+                if not self.slcallback == None:
+                    if not self.slargs == None:
+                        self.slcallback(self.slargs)
+                    else:
+                        self.slcallback()
     def deactivate(self):
         self.isActive = False
         self.L.reset()

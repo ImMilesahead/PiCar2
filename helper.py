@@ -14,8 +14,8 @@ class Color:
 
 
 
-def text(skrn, text, pos=(0, 0), size=60, color=(255, 200, 100)):
-    sys_font = pygame.font.SysFont("Arial", int(size))
+def text(skrn, text, pos=(0, 0), size=60, color=(255, 200, 100), font="Arial"):
+    sys_font = pygame.font.SysFont(font, int(size))
     rendered = sys_font.render(str(text), 0, color)
     skrn.blit(rendered, pos)
 

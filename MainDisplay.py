@@ -21,6 +21,13 @@ class MainDisplay:
         for b in self.buttonInfo:
             self.buttons.append(MainMenuItem(self.skrn, self, x*75, b[0], self.setActive, x-1))
             x += 1
+        self.buttons[0].slcallback=self.musicLeft
+        self.buttons[0].srcallback=self.musicRight
+
+        self.showMusicControls = False
+
+        self.musicImage = pygame.image.load('./Media/Pictures/MediaControls.png')
+        self.musicImage = pygame.transform.scale(self.musicImage, (120, 40))
 
         self.animateCircleAngle = 90
         self.lastEvent = datetime.now()
@@ -35,6 +42,15 @@ class MainDisplay:
         pygame.draw.circle(self.skrn, Color.Primary, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius, 2)
         pygame.draw.circle(self.skrn, Color.Background, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius-1)
         # Draw Text
+        p1 = (575, 0)
+        p2 = (600, 25)
+        p3 = (800, 25)
+        points = (p1, p2, p3)
+        if self.showMusicControls:
+            self.skrn.blit(self.musicImage, (215, 80))
+        pygame.draw.lines(self.skrn, Color.Primary, False, points, 1)
+        text(self.skrn, "S - Interface Mk 2", (600, 0), size=24, color=Color.Text)
+        # TODO move ^ somewhere else
         text(self.skrn, self.hour, (self.circleCenter[0].getValue() + 250, self.circleCenter[1].getValue() -40), size=48, color=Color.Text)
         text(self.skrn, self.minute, (self.circleCenter[0].getValue() + 250, self.circleCenter[1].getValue()), size=48, color=Color.Text)
 
@@ -84,7 +100,6 @@ class MainDisplay:
 
     def event(self, event):
         self.lastEvent = datetime.now()
-        print(event)
         if event == 'Swipe Right':        
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] < 250:
@@ -132,4 +147,10 @@ class MainDisplay:
         self.activeButton = 0
         for button in self.buttons:
             button.xOffset.setTarget(-400)
+        self.buttons[0].L.setTarget(len(self.buttons[0].text)*30)
         self.buttons[0].xOffset.setTarget(0)
+
+    def musicLeft(self):
+        self.showMusicControls = True
+    def musicRight(self):
+        self.showMusicControls = False
