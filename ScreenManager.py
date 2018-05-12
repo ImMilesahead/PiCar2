@@ -12,26 +12,16 @@ class ScreenManager:
         self.endTime = None
         self.startPos = None
         self.endPos = None
-
     def addScreen(self, screen):
         self.screens.append(screen)
         self.numberOfScreens += 1
-
     def draw(self):
         self.skrn.fill(Color.Background)
-
         # Draw current screen
         self.screens[self.currentScreen].draw()
-        
-
-    
-    def logic(self):
-        self.screens[self.currentScreen].logic()
-
-
-
+    def logic(self, deltaTime):
+        self.screens[self.currentScreen].logic(deltaTime)
     def event(self, event):
-
         '''
         Swipe and tap detection
         '''
@@ -85,8 +75,7 @@ class ScreenManager:
                     elif angle > 135 and angle < 225:
                         self.screens[self.currentScreen].event('Swipe Left')
                     elif angle > 225 and angle < 315:
-                        self.screens[self.currentScreen].event('Swipe Down')
-                            
+                        self.screens[self.currentScreen].event('Swipe Down')                   
     def loadScreen(self, screen):
         if screen < self.numberOfScreens:
             self.currentScreen = screen

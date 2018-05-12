@@ -10,7 +10,7 @@ from datetime import datetime
 class Color:
     Primary = (0, 153, 255)
     Text = (0, 153, 255)
-    Background = (35, 35, 35)
+    Background = (35, 35, 75)
 
 
 

@@ -1,5 +1,5 @@
 from helper import *
-
+from SmartValue import *
 class MainMenuItem:
     def __init__(self, skrn, mainDisplay, y=0, text='None', callback=None, args=None):
         self.skrn = skrn
@@ -11,57 +11,40 @@ class MainMenuItem:
 
         self.dy = 50
         self.dx = 50
-        self.initL = 300
-        self.L = self.initL
-        self.targetL = self.L
-
-        #self.L = len(self.text)*25
+        self.L = SmartValue(300)
+        self.text_offset = SmartValue(0)
+        self.xOffset = SmartValue(0)
 
         self.isActive = False
-
-        self.before = datetime.now()
-
-        self.minSize = 300
-        self.maxSize = 300
 
         self.circleX = self.mainDisplay.circleCenter[0]
         self.circleR = self.mainDisplay.circleRadius
 
         self.points = self.getPoints()
 
-        self.text_offset = 0
-        self.targetTextOffset = 0
         
 
     def draw(self):
         if self.y < 480 and self.y > -50:
             pygame.draw.lines(self.skrn, Color.Primary, False, self.points, 1)
-            text_pos = (self.points[3][0]+5+self.text_offset, self.points[0][1])
+            text_pos = (self.points[3][0]+5+self.text_offset.getValue(), self.points[0][1])
             if self.y > 240:
-                text_pos = (self.points[0][0]+5+self.text_offset, text_pos[1])
+                text_pos = (self.points[0][0]+5+self.text_offset.getValue(), text_pos[1])
             text(self.skrn, self.text, text_pos, 40, Color.Text)
     
     def f(self, y):
-        self.circleX = self.mainDisplay.circleCenter[0]
+        self.circleX = self.mainDisplay.circleCenter[0].getValue()
         self.circleR = self.mainDisplay.circleRadius
-        y = self.mainDisplay.circleCenter[1] - y
+        y = self.mainDisplay.circleCenter[1].getValue() - y
         theta = asin(float(y)/float(self.circleR))
         co = cos(theta)
         return self.circleR*co + self.circleX
         
-    def logic(self):
-        after = datetime.now()
-        deltaTime = after.second - self.before.second
-        deltaTime *= 1000000
-        deltaTime += after.microsecond - self.before.microsecond
-        deltaTime = float(deltaTime) / 1000000
-        self.before = after
-        
+    def logic(self, deltaTime):
+        self.L.logic(deltaTime)
+        self.xOffset.logic(deltaTime)
+        self.text_offset.logic(deltaTime)
         self.points = self.getPoints()
-        deltaL = self.targetL - self.L
-        self.L += deltaL*deltaTime*10
-        deltaText = self.targetTextOffset - self.text_offset
-        self.text_offset += deltaText*deltaTime*10
         
 
     def event(self, event):
@@ -75,19 +58,17 @@ class MainMenuItem:
                 else:
                     if not self.callback == None:
                         self.callback(self.args)
-        if event == 'Swipe Right':
-            if mouse_pos[0] < 250:
-                self.notActive()
         
-    def notActive(self):
+    def deactivate(self):
         self.isActive = False
-        self.targetL = self.initL
-        self.targetTextOffset = 0
+        self.L.reset()
+        self.text_offset.reset()
+        self.xOffset.reset()
 
     def setActive(self):
         self.isActive = True
-        self.targetL = 445 + len(self.text)*20 - self.points[0][0]
-        self.targetTextOffset = 435 - self.points[3][0]+5
+        self.L.setTarget(445 + len(self.text)*20 - self.points[0][0])
+        self.text_offset.setTarget(435 - self.points[3][0]+5)
     
     def setPos(self, y):
         self.y = y
@@ -96,8 +77,8 @@ class MainMenuItem:
         y2 = self.y+self.dy
         f1 = self.f(self.y)
         f2 = self.f(y2)
-        p1 = (f1, self.y)
-        p2 = (f1+self.L, self.y)
-        p3 = (f2+self.L+self.dx+(f1-f2), y2)
-        p4 = (f2, y2)
+        p1 = (f1+self.xOffset.getValue(), self.y)
+        p2 = (f1+self.L.getValue()+self.xOffset.getValue(), self.y)
+        p3 = (f2+self.L.getValue()+self.dx+(f1-f2)+self.xOffset.getValue(), y2)
+        p4 = (f2+self.xOffset.getValue(), y2)
         return (p1, p2, p3, p4)

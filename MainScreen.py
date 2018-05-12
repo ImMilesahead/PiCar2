@@ -9,13 +9,11 @@ class MainScreen:
         self.mainDisplay = MainDisplay(skrn)
 
     def draw(self):
-        
         # Draw Time
         self.mainDisplay.draw()
         
-
-    def logic(self):
-        self.mainDisplay.logic()
+    def logic(self, deltaTime):
+        self.mainDisplay.logic(deltaTime)
 
 
     def event(self, event):
