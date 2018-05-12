@@ -25,6 +25,7 @@ class MainDisplay:
         self.buttons[0].srcallback=self.musicRight
 
         self.showMusicControls = False
+        self.musicX = SmartValue(350)
 
         self.musicImage = pygame.image.load('./Media/Pictures/MediaControls.png')
         self.musicImage = pygame.transform.scale(self.musicImage, (120, 40))
@@ -35,6 +36,9 @@ class MainDisplay:
         self.minute = '00'
 
     def draw(self):
+        if self.musicX.getValue() < 390:
+            self.skrn.blit(self.musicImage, (self.musicX.getValue(), 80))
+        pygame.draw.rect(self.skrn, Color.Background, (self.musicX.getInitPos(), 80, 120, 40), 0)
         # We wanna draw the buttons first so that we can hide them behind the display
         for button in self.buttons:
             button.draw()
@@ -46,8 +50,7 @@ class MainDisplay:
         p2 = (600, 25)
         p3 = (800, 25)
         points = (p1, p2, p3)
-        if self.showMusicControls:
-            self.skrn.blit(self.musicImage, (215, 80))
+        
         pygame.draw.lines(self.skrn, Color.Primary, False, points, 1)
         text(self.skrn, "S - Interface Mk 2", (600, 0), size=24, color=Color.Text)
         # TODO move ^ somewhere else
@@ -65,6 +68,7 @@ class MainDisplay:
         if self.minute < 10:
             self.minute = '0' + str(self.minute)
         # Do other stuff
+        self.musicX.logic(deltaTime)
         # Update Circle Smart position
         self.circleCenter[0].logic(deltaTime)
         self.circleCenter[1].logic(deltaTime)
@@ -100,13 +104,17 @@ class MainDisplay:
 
     def event(self, event):
         self.lastEvent = datetime.now()
-        if event == 'Swipe Right':        
+        if event == 'Swipe Right':
+            self.buttons[0].event(event)
             mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] < 250:
                 if not self.activeButton == None:
                     self.deactivateButton()
-        for button in self.buttons:
+        
+        for button in self.buttons[1:]:
             button.event(event)
+        if not self.showMusicControls:
+            self.buttons[0].event(event)
     def setActive(self, button):
         if self.activeButton == None:    
             if button < len(self.buttons):
@@ -118,6 +126,7 @@ class MainDisplay:
                 elif button == 0:
                     self.setMusic()
                 else:
+                    self.showMusicControls = False
                     self.activeButton = button
                     self.circleCenter[0].setTarget(-240-435)
                     self.buttons[button].setActive()
@@ -152,5 +161,7 @@ class MainDisplay:
 
     def musicLeft(self):
         self.showMusicControls = True
+        self.musicX.setTarget(215)
     def musicRight(self):
         self.showMusicControls = False
+        self.musicX.reset()
