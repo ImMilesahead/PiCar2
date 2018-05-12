@@ -2,7 +2,10 @@ from helper import *
 from MainMenuItem import *
 from subprocess import call
 from SmartValue import *
-
+from MediaPlayer import *
+from MusicScreen import *
+from AlbumManager import *
+from Song import *
 class MainDisplay:
     def __init__(self, skrn):
         self.skrn = skrn
@@ -13,6 +16,9 @@ class MainDisplay:
 
         self.buttons = []
         self.activeButton = None
+
+        self.mediaPlayer = MediaPlayer()
+        self.musicScreen = MusicScreen(self.skrn, self.mediaPlayer)
 
         mmbfile = open(CWD + '/MainMenuButtons.txt', 'r')
         self.buttonInfo = [f.split(' ') for f in mmbfile.read().split('\n')]
@@ -35,21 +41,24 @@ class MainDisplay:
         self.hour = '00'
         self.minute = '00'
 
+
     def draw(self):
         if self.musicX.getValue() < 390:
-            self.skrn.blit(self.musicImage, (self.musicX.getValue(), 80))
-        pygame.draw.rect(self.skrn, Color.Background, (self.musicX.getInitPos(), 80, 120, 40), 0)
+            self.skrn.blit(self.musicImage, (self.musicX.getValue() + self.buttons[0].points[0][0]-50, 80))
+        pygame.draw.rect(self.skrn, Color.Background, (self.musicX.getInitPos() + self.buttons[0].points[0][0]-50, 80, 120, 40), 0)
         # We wanna draw the buttons first so that we can hide them behind the display
         for button in self.buttons:
             button.draw()
         #Draw oval thing
-        pygame.draw.circle(self.skrn, Color.Primary, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius, 2)
+        pygame.draw.circle(self.skrn, Color.Primary, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius, 3)
         pygame.draw.circle(self.skrn, Color.Background, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius-1)
         # Draw Text
         p1 = (575, 0)
         p2 = (600, 25)
         p3 = (800, 25)
         points = (p1, p2, p3)
+
+        self.musicScreen.draw()
         
         pygame.draw.lines(self.skrn, Color.Primary, False, points, 1)
         text(self.skrn, "S - Interface Mk 2", (600, 0), size=24, color=Color.Text)
@@ -79,13 +88,15 @@ class MainDisplay:
 
         for button in self.buttons:
             button.logic(deltaTime)
+        self.musicScreen.logic(deltaTime)
+        self.mediaPlayer.logic()
 
         if self.updating:
             self.updating = False
             self.update()
         now = datetime.now()
         n = now - self.lastEvent
-        if n.total_seconds() > 5:
+        if n.total_seconds() > 15:
             if not self.activeButton == None:
                 self.deactivateButton()
                 self.lastEvent = now
@@ -104,12 +115,24 @@ class MainDisplay:
 
     def event(self, event):
         self.lastEvent = datetime.now()
+        if self.activeButton == 0:
+            self.musicScreen.event(event)
         if event == 'Swipe Right':
             self.buttons[0].event(event)
             mouse_pos = pygame.mouse.get_pos()
-            if mouse_pos[0] < 250:
+            if mouse_pos[0] < 150:
                 if not self.activeButton == None:
                     self.deactivateButton()
+        elif event == 'Tap':
+            if self.showMusicControls:
+                mouse_pos = pygame.mouse.get_pos()
+                if mouse_pos[1] > 75 and mouse_pos[1] < 125:
+                    if mouse_pos[0] > 200 and mouse_pos[0] < 230:
+                        self.mediaPlayer.prevSong()
+                    elif mouse_pos[0] < 285 and mouse_pos[0] > 125:
+                        self.mediaPlayer.toggle()
+                    elif mouse_pos[0] < 325 and mouse_pos[0] > 285:
+                        self.mediaPlayer.nextSong()
         
         for button in self.buttons[1:]:
             button.event(event)
@@ -126,6 +149,7 @@ class MainDisplay:
                 elif button == 0:
                     self.setMusic()
                 else:
+                    self.musicX.reset()
                     self.showMusicControls = False
                     self.activeButton = button
                     self.circleCenter[0].setTarget(-240-435)
@@ -138,6 +162,9 @@ class MainDisplay:
             self.deactivateButton()
     def deactivateButton(self):
         if not self.activeButton == None:
+            if self.activeButton == 0:
+                self.musicScreen.animateOut()
+                self.showMusicControls = False
             for button in self.buttons:
                 button.deactivate()
             self.activeButton = None
@@ -154,6 +181,7 @@ class MainDisplay:
         self.buttons[3].text = 'Up to date!'
     def setMusic(self):
         self.activeButton = 0
+        self.musicScreen.animateIn()
         for button in self.buttons:
             button.xOffset.setTarget(-400)
         self.buttons[0].L.setTarget(len(self.buttons[0].text)*30)

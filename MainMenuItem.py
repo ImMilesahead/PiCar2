@@ -31,7 +31,7 @@ class MainMenuItem:
     def draw(self):
         if self.y < 480 and self.y > -50:
             #ygame.draw.rect(self.skrn, Color.Background, (self.points[0][0], self.points[0][1], self.points[2][0]-self.points[0][0], self.points[2][1] - self.points[0][1]), 0)
-            pygame.draw.lines(self.skrn, Color.Primary, False, self.points, 1)
+            pygame.draw.lines(self.skrn, Color.Primary, False, self.points, 2)
             text_pos = (self.points[3][0]+5+self.text_offset.getValue(), self.points[0][1])
             if self.y > 240:
                 text_pos = (self.points[0][0]+5+self.text_offset.getValue(), text_pos[1])

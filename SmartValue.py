@@ -15,3 +15,9 @@ class SmartValue:
         self.targetValue = self.initValue
     def getInitPos(self):
         return self.initValue
+    def getOff(self):
+        return self.targetValue - self.value
+    def setValue(self, value):
+        self.value = value
+    def getTarget(self):
+        return self.targetValue
