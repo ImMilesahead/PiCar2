@@ -27,7 +27,7 @@ class MainDisplay:
         self.showMusicControls = False
         self.musicX = SmartValue(350)
 
-        self.musicImage = pygame.image.load('./Media/Pictures/MediaControls.png')
+        self.musicImage = pygame.image.load(CWD + '/Media/Pictures/MediaControls.png')
         self.musicImage = pygame.transform.scale(self.musicImage, (120, 40))
 
         self.animateCircleAngle = 90
