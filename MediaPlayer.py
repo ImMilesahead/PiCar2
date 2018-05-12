@@ -1,9 +1,10 @@
 import pygame
 class MediaPlayer:
-    def __init__(self):
+    def __init__(self, parent):
         self.currentSong = None
         self.currentPlaylist = None
         self.paused = False
+        self.parent = parent
         pygame.mixer.init()
     def logic(self):
         if not self.paused and not pygame.mixer.music.get_busy():
@@ -28,6 +29,7 @@ class MediaPlayer:
     def playPlaylist(self, playlist):
         self.playlist = playlist
         self.playSong(self.playlist.getCurrentSong())
+        pygame.mixer.music.set_volume(self.parent.volume)
     def getCurSong(self):
         return self.currentSong
     def getCurPlaylist(self):

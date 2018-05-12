@@ -16,8 +16,9 @@ class MainDisplay:
 
         self.buttons = []
         self.activeButton = None
-
-        self.mediaPlayer = MediaPlayer()
+        self.showVolumeControl = False
+        self.volume = 1
+        self.mediaPlayer = MediaPlayer(self)
         self.musicScreen = MusicScreen(self.skrn, self.mediaPlayer)
 
         mmbfile = open(CWD + '/MainMenuButtons.txt', 'r')
@@ -29,8 +30,7 @@ class MainDisplay:
             x += 1
         self.buttons[0].slcallback=self.musicLeft
         self.buttons[0].srcallback=self.musicRight
-        self.showVolumeControl = False
-        self.volume = 1
+
         self.showMusicControls = False
         self.musicX = SmartValue(350)
 
@@ -116,7 +116,7 @@ class MainDisplay:
             self.volume = float(480 - mouse_pos[1])/455
             pygame.mixer.music.set_volume(self.volume)
         
-        if event == 'Swipe Left' and mouse_pos[0] > 700:
+        if event == 'Swipe Left' and mouse_pos[0] > 600:
             self.showVolumeControl = True
             print('Volume showing')
         elif event == 'Swipe Right':
@@ -125,7 +125,7 @@ class MainDisplay:
                 if not self.activeButton == None:
                     self.deactivateButton()
         elif event == 'Tap':
-            if mouse_pos[0] < 700:
+            if mouse_pos[0] < 650:
                 self.showVolumeControl = False
                 print('Volume hidden')
             if self.showMusicControls:
