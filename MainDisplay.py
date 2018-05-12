@@ -74,11 +74,13 @@ class MainDisplay:
             if not song == None:
                 songText = 'Now Playing: ' + song.name
                 if len(songText) > 30:
-                    songText = song.name[:30]
+                    songText = songText[0:30]
                 text(self.skrn, songText, (175, 113), size=12, color=Color.Text)   
         if self.showVolumeControl:
             pygame.draw.rect(self.skrn, Color.Primary, (700, 30, 100, 450), 2)
             pygame.draw.rect(self.skrn, Color.Primary, (702, 480-(450*self.volume), 96, 450*self.volume))
+        pygame.draw.circle(self.skrn, Color.Primary, (int(self.buttons[0].f(25+430*self.mediaPlayer.getPercent())), int(25+430*self.mediaPlayer.getPercent())), 3)
+        
     def logic(self, deltaTime):
         # Update Time to Display
         now = datetime.now()

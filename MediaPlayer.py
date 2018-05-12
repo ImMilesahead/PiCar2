@@ -43,3 +43,5 @@ class MediaPlayer:
                     self.pause()
             else:
                 self.playSong(self.playlist.getCurrentSong())
+    def getPercent(self):
+        return pygame.mixer.music.get_pos()/(1000*self.currentSong.length)
