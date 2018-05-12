@@ -29,7 +29,8 @@ class MainDisplay:
             x += 1
         self.buttons[0].slcallback=self.musicLeft
         self.buttons[0].srcallback=self.musicRight
-
+        self.showVolumeControl = False
+        self.volume = 1
         self.showMusicControls = False
         self.musicX = SmartValue(350)
 
@@ -46,12 +47,15 @@ class MainDisplay:
         if self.musicX.getValue() < 390:
             self.skrn.blit(self.musicImage, (self.musicX.getValue() + self.buttons[0].points[0][0]-50, 80))
         pygame.draw.rect(self.skrn, Color.Background, (self.musicX.getInitPos() + self.buttons[0].points[0][0]-50, 80, 120, 40), 0)
+        
         # We wanna draw the buttons first so that we can hide them behind the display
         for button in self.buttons:
             button.draw()
+        
         #Draw oval thing
         pygame.draw.circle(self.skrn, Color.Primary, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius, 3)
         pygame.draw.circle(self.skrn, Color.Background, (int(self.circleCenter[0].getValue()), int(self.circleCenter[1].getValue())), self.circleRadius-1)
+        
         # Draw Text
         p1 = (575, 0)
         p2 = (600, 25)
@@ -65,8 +69,16 @@ class MainDisplay:
         # TODO move ^ somewhere else
         text(self.skrn, self.hour, (self.circleCenter[0].getValue() + 250, self.circleCenter[1].getValue() -40), size=48, color=Color.Text)
         text(self.skrn, self.minute, (self.circleCenter[0].getValue() + 250, self.circleCenter[1].getValue()), size=48, color=Color.Text)
-
-        
+        if self.activeButton == None:
+            song = self.mediaPlayer.getCurSong()
+            if not song == None:
+                songText = 'Now Playing: ' + song.name
+                if len(songText) > 30:
+                    songText = song.name[:30]
+                text(self.skrn, songText, (175, 113), size=12, color=Color.Text)   
+        if self.showVolumeControl:
+            pygame.draw.rect(self.skrn, Color.Primary, (700, 30, 100, 450), 2)
+            pygame.draw.rect(self.skrn, Color.Primary, (702, 480-(450*self.volume), 96, 450*self.volume))
     def logic(self, deltaTime):
         # Update Time to Display
         now = datetime.now()
@@ -94,38 +106,29 @@ class MainDisplay:
         if self.updating:
             self.updating = False
             self.update()
-        now = datetime.now()
-        n = now - self.lastEvent
-        if n.total_seconds() > 15:
-            if not self.activeButton == None:
-                self.deactivateButton()
-                self.lastEvent = now
-            else:
-                self.animateCircleAngle -= 0.1
-                if self.animateCircleAngle < 0:
-                    self.animateCircleAngle = 360
-                if self.animateCircleAngle < 270 and self.animateCircleAngle > 90:
-                    self.animateCircleAngle = 90
-                x = self.circleCenter[0].getValue() + self.circleRadius*cos(pi*self.animateCircleAngle/180)
-                y = self.circleCenter[1].getValue() + self.circleRadius*sin(pi*self.animateCircleAngle/180)
-                animatePos = (int(x), 480-int(y))
-                pygame.draw.circle(self.skrn, Color.Primary, animatePos, 5, 0) 
-        else:
-            self.animateCircleAngle = 90
-
     def event(self, event):
         self.lastEvent = datetime.now()
         if self.activeButton == 0:
             self.musicScreen.event(event)
-        if event == 'Swipe Right':
+        mouse_pos = pygame.mouse.get_pos()
+        # Set Pos
+        if mouse_pos[0] > 700 and mouse_pos[1] > 25 and self.showVolumeControl:
+            self.volume = float(480 - mouse_pos[1])/455
+            pygame.mixer.music.set_volume(self.volume)
+        
+        if event == 'Swipe Left' and mouse_pos[0] > 700:
+            self.showVolumeControl = True
+            print('Volume showing')
+        elif event == 'Swipe Right':
             self.buttons[0].event(event)
-            mouse_pos = pygame.mouse.get_pos()
             if mouse_pos[0] < 150:
                 if not self.activeButton == None:
                     self.deactivateButton()
         elif event == 'Tap':
+            if mouse_pos[0] < 700:
+                self.showVolumeControl = False
+                print('Volume hidden')
             if self.showMusicControls:
-                mouse_pos = pygame.mouse.get_pos()
                 if mouse_pos[1] > 75 and mouse_pos[1] < 125:
                     if mouse_pos[0] > 200 and mouse_pos[0] < 230:
                         self.mediaPlayer.prevSong()
@@ -186,7 +189,6 @@ class MainDisplay:
             button.xOffset.setTarget(-400)
         self.buttons[0].L.setTarget(len(self.buttons[0].text)*30)
         self.buttons[0].xOffset.setTarget(0)
-
     def musicLeft(self):
         self.showMusicControls = True
         self.musicX.setTarget(215)

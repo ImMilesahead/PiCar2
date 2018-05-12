@@ -15,6 +15,7 @@ class MediaPlayer:
         pygame.mixer.music.unpause()
         self.paused = False
     def playSong(self, song):
+        self.currentSong = song
         pygame.mixer.music.load(song.getRealPath())
         pygame.mixer.music.play()
         print('Playing song: ' + song.name)

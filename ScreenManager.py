@@ -75,7 +75,8 @@ class ScreenManager:
                     elif angle > 135 and angle < 225:
                         self.screens[self.currentScreen].event('Swipe Left')
                     elif angle > 225 and angle < 315:
-                        self.screens[self.currentScreen].event('Swipe Down')                   
+                        self.screens[self.currentScreen].event('Swipe Down')     
+        self.screens[self.currentScreen].event(event)              
     def loadScreen(self, screen):
         if screen < self.numberOfScreens:
             self.currentScreen = screen
